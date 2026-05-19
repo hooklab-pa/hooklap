@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>hooklap — Link in Bio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0a0a0d;
+    --bg-1:#111318;
+    --bg-2:#1a1d24;
+    --line:#2a2f3a;
+    --text:#e6e8ee;
+    --muted:#8a90a0;
+    --blue:#4ea0ff;
+    --blue-2:#2563eb;
+    --blue-glow:rgba(78,160,255,0.35);
+    --metal-1:#3a4a66;
+    --metal-2:#6b7c95;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(78,160,255,0.18), transparent 60%),
+      radial-gradient(800px 500px at 80% 110%, rgba(37,99,235,0.15), transparent 60%),
+      linear-gradient(180deg, #0a0a0d 0%, #0d1016 50%, #0a0a0d 100%);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 16px 80px;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.65  0 0 0 0 0.75  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity:.5; pointer-events:none; z-index:0;
+  }
+  .wrap{
+    position:relative; z-index:1;
+    width:100%; max-width:420px;
+    display:flex; flex-direction:column; gap:18px;
+    animation:fadeUp .9s ease both;
+  }
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(20px)}
+    to{opacity:1; transform:translateY(0)}
+  }
+
+  /* ============ HEADER + LOGO ============ */
+  .header{ text-align:center; padding:8px 0 4px;}
+
+  .status{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-bottom:18px;
+    padding:5px 10px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+    background:rgba(26,29,36,0.6);
+    backdrop-filter:blur(6px);
+  }
+  .status::before{
+    content:""; width:6px; height:6px; border-radius:50%;
+    background:var(--blue);
+    box-shadow:0 0 10px var(--blue-glow);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ============ LOGO HOOKLAP — stacked como en la foto ============ */
+  .logo-stack{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    line-height:.78;
+    font-family:'Archivo Black', 'Inter', sans-serif;
+    font-weight:900;
+    color:#ffffff;
+    letter-spacing:-0.02em;
+    text-transform:lowercase;
+    position:relative;
+    padding:6px 0;
+    text-align:center;
+  }
+  .logo-stack .row{
+    display:block;
+    font-size:96px;
+    text-align:center;
+  }
+  .logo-stack .row.hook{
+    background:linear-gradient(180deg,#ffffff 0%, #d6dce8 70%, #b6c2d6 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 22px rgba(78,160,255,0.10));
+  }
+  .logo-stack .row.lap{
+    background:linear-gradient(180deg,#ffffff 0%, #c8d0e0 80%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-top:-6px;
+  }
+
+  /* tag "| Lap" después del logo */
+  .lap-tag{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:16px;
+    font-family:'Archivo Black', sans-serif;
+    color:var(--blue);
+    letter-spacing:-.01em;
+  }
+  .lap-tag .bar{
+    display:inline-block;
+    width:2px;
+    height:22px;
+    background:linear-gradient(180deg, transparent, var(--blue), transparent);
+    box-shadow:0 0 12px var(--blue-glow);
+  }
+  .lap-tag .word{
+    font-size:22px;
+    text-transform:lowercase;
+    text-shadow:0 0 14px rgba(78,160,255,0.4);
+  }
+
+  .tag{
+    margin-top:18px; color:var(--muted);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px; letter-spacing:.16em;
+    text-transform:uppercase;
+    line-height:1.65;
+    padding:0 6px;
+  }
+  .pitch{
+    margin-top:14px; font-family:'Space Grotesk',sans-serif;
+    font-size:15px; line-height:1.55; color:#cfd4e0; font-weight:400;
+    padding:0 8px;
+  }
+  .pitch b{color:#fff; font-weight:600}
+  .pitch em{ color:var(--blue); font-style:normal; }
+
+  /* COORDS */
+  .coords{
+    display:flex; justify-content:center; gap:18px;
+    margin-top:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.12em;
+    color:var(--metal-2);
+  }
+  .coords span{ display:flex; align-items:center; gap:5px;}
+  .coords span::before{
+    content:""; width:4px; height:4px; background:var(--blue); border-radius:50%;
+    opacity:.6;
+  }
+
+  /* ============ BOTONES ============ */
+  .links{ display:flex; flex-direction:column; gap:12px; margin-top:10px;}
+  .btn{
+    position:relative;
+    display:flex; align-items:center; gap:14px;
+    padding:16px 18px;
+    background:linear-gradient(180deg, rgba(26,29,36,0.95), rgba(17,19,24,0.95));
+    border:1px solid var(--line);
+    border-radius:14px;
+    color:var(--text); text-decoration:none;
+    font-weight:500; font-size:15px; letter-spacing:.02em;
+    transition:all .25s ease;
+    overflow:hidden;
+  }
+  .btn::before{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 0%, rgba(78,160,255,.0) 40%, rgba(78,160,255,.25) 50%, rgba(78,160,255,.0) 60%, transparent 100%);
+    transform:translateX(-100%);
+    transition:transform .6s ease;
+  }
+  .btn:hover{
+    border-color:var(--blue);
+    transform:translateY(-2px);
+    box-shadow:0 8px 30px rgba(78,160,255,0.18), 0 0 0 1px var(--blue) inset;
+  }
+  .btn:hover::before{ transform:translateX(100%) }
+  .btn .ico{
+    width:38px; height:38px; flex-shrink:0;
+    border-radius:10px;
+    background:linear-gradient(135deg, #1a1d24, #0a0a0d);
+    border:1px solid var(--line);
+    display:grid; place-items:center;
+    color:var(--blue);
+  }
+  .btn .meta{ display:flex; flex-direction:column; line-height:1.15}
+  .btn .meta small{ color:var(--muted); font-weight:400; font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; margin-top:3px; font-family:'JetBrains Mono', monospace;}
+  .btn .badge{
+    margin-left:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.14em;
+    color:var(--muted);
+    padding:3px 7px;
+    border:1px solid var(--line);
+    border-radius:6px;
+  }
+  .btn.primary{
+    background:linear-gradient(180deg, #1f3a5f 0%, #142442 100%);
+    border-color:#3b6ea8;
+    box-shadow:0 6px 24px rgba(78,160,255,0.22);
+  }
+  .btn.primary .ico{ background:linear-gradient(135deg, #4ea0ff, #2563eb); color:#fff; border-color:transparent}
+  .btn.primary:hover{ box-shadow:0 10px 36px rgba(78,160,255,0.4)}
+
+  /* ============ BOTONES EXPANDIBLES ============ */
+  details.btn-expand{
+    background:linear-gradient(180deg, rgba(26,29,36,0.95), rgba(17,19,24,0.95));
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    transition:all .25s ease;
+  }
+  details.btn-expand[open]{
+    border-color:var(--blue);
+    box-shadow:0 8px 30px rgba(78,160,255,0.16);
+  }
+  details.btn-expand summary{
+    list-style:none;
+    cursor:pointer;
+    display:flex; align-items:center; gap:14px;
+    padding:16px 18px;
+    color:var(--text);
+    font-weight:500; font-size:15px;
+    transition:all .25s ease;
+    position:relative;
+  }
+  details.btn-expand summary::-webkit-details-marker{ display:none; }
+  details.btn-expand summary:hover{ background:rgba(78,160,255,0.05); }
+  details.btn-expand summary .ico{
+    width:38px; height:38px; flex-shrink:0;
+    border-radius:10px;
+    background:linear-gradient(135deg, #1a1d24, #0a0a0d);
+    border:1px solid var(--line);
+    display:grid; place-items:center;
+    color:var(--blue);
+  }
+  details.btn-expand summary .meta{ display:flex; flex-direction:column; line-height:1.15; flex:1; }
+  details.btn-expand summary .meta small{
+    color:var(--muted); font-weight:400; font-size:11.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:3px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  details.btn-expand summary .chevron{
+    width:24px; height:24px;
+    display:grid; place-items:center;
+    color:var(--muted);
+    transition:transform .3s ease, color .3s ease;
+  }
+  details.btn-expand[open] summary .chevron{
+    transform:rotate(180deg);
+    color:var(--blue);
+  }
+  details.btn-expand .panel{
+    padding:0 18px 18px 18px;
+    border-top:1px solid var(--line);
+    animation:expandIn .35s ease;
+  }
+  @keyframes expandIn{
+    from{opacity:0; transform:translateY(-6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  details.btn-expand .panel p{
+    margin:14px 0 12px;
+    font-size:13.5px;
+    line-height:1.55;
+    color:#cfd4e0;
+  }
+  details.btn-expand .panel .includes-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--blue);
+    margin:10px 0 6px;
+    display:block;
+  }
+  details.btn-expand .panel ul{
+    list-style:none; padding:0; margin:0 0 16px;
+  }
+  details.btn-expand .panel ul li{
+    position:relative;
+    padding:5px 0 5px 18px;
+    font-size:13px;
+    color:var(--text);
+    line-height:1.4;
+  }
+  details.btn-expand .panel ul li::before{
+    content:""; position:absolute; left:0; top:11px;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--blue);
+    box-shadow:0 0 8px var(--blue-glow);
+  }
+  details.btn-expand .panel .cta{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+    margin-top:14px;
+    padding:12px 16px;
+    background:linear-gradient(135deg, rgba(78,160,255,0.18), rgba(37,99,235,0.12));
+    border:1px solid var(--blue);
+    border-radius:10px;
+    color:#fff;
+    text-decoration:none;
+    font-size:13px; font-weight:500;
+    transition:all .25s ease;
+  }
+  details.btn-expand .panel .cta:hover{
+    background:linear-gradient(135deg, rgba(78,160,255,0.3), rgba(37,99,235,0.25));
+    transform:translateX(2px);
+  }
+  details.btn-expand .panel .cta svg{ flex-shrink:0; color:var(--blue); }
+
+  /* Reel / video dentro del panel */
+  details.btn-expand .panel .reel{
+    margin:10px 0 6px;
+    border-radius:10px;
+    overflow:hidden;
+    background:#000;
+    position:relative;
+    border:1px solid var(--line);
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  }
+  details.btn-expand .panel .reel video{
+    width:100%;
+    display:block;
+    background:#000;
+  }
+  details.btn-expand .panel .reel-caption{
+    display:flex; align-items:center; gap:8px;
+    margin:8px 0 14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  details.btn-expand .panel .reel-caption .tag-pill{
+    color:var(--blue);
+    border:1px solid var(--line);
+    padding:2px 7px;
+    border-radius:6px;
+    font-size:9.5px;
+  }
+
+  /* Próximos casos placeholder */
+  details.btn-expand .panel .next-cases{
+    display:flex; flex-direction:column; gap:6px;
+    margin:6px 0 14px;
+    padding:14px 14px;
+    border:1px dashed var(--line);
+    border-radius:10px;
+    background:rgba(78,160,255,0.04);
+    position:relative;
+  }
+  details.btn-expand .panel .next-cases::before{
+    content:""; position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    width:6px; height:6px; border-radius:50%;
+    background:var(--blue);
+    box-shadow:0 0 8px var(--blue-glow);
+    animation:pulse 2s ease-in-out infinite;
+    display:none; /* hidden, label has its own dot */
+  }
+  details.btn-expand .panel .next-cases .next-cases-label{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--blue);
+  }
+  details.btn-expand .panel .next-cases .next-cases-label::before{
+    content:""; width:6px; height:6px; border-radius:50%;
+    background:var(--blue);
+    box-shadow:0 0 8px var(--blue-glow);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  details.btn-expand .panel .next-cases .next-cases-text{
+    font-size:12.5px;
+    color:#cfd4e0;
+    line-height:1.45;
+  }
+
+  /* Gallery scroll horizontal para Dirección de Producciones */
+  details.btn-expand .panel .gallery{
+    display:flex;
+    gap:8px;
+    margin:6px -4px 14px;
+    padding:4px 4px 10px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--blue) transparent;
+  }
+  details.btn-expand .panel .gallery::-webkit-scrollbar{ height:5px; }
+  details.btn-expand .panel .gallery::-webkit-scrollbar-track{ background:transparent; }
+  details.btn-expand .panel .gallery::-webkit-scrollbar-thumb{
+    background:var(--line);
+    border-radius:4px;
+  }
+  details.btn-expand .panel .gallery .card{
+    flex:0 0 auto;
+    width:180px;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:#000;
+    scroll-snap-align:start;
+    transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    cursor:pointer;
+    display:block;
+    text-decoration:none;
+    color:inherit;
+  }
+  details.btn-expand .panel .gallery .card:hover{
+    border-color:var(--blue);
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(78,160,255,0.18);
+  }
+  details.btn-expand .panel .gallery .card .thumb{
+    width:100%;
+    aspect-ratio:3/4;
+    object-fit:cover;
+    display:block;
+  }
+  details.btn-expand .panel .gallery .card .cap{
+    padding:8px 10px 10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted);
+    line-height:1.35;
+    border-top:1px solid var(--line);
+  }
+  /* Galería sin captions (Activaciones) */
+  details.btn-expand .panel .gallery.no-caps .card{
+    background:transparent;
+  }
+  details.btn-expand .panel .gallery.no-caps .card .thumb{
+    aspect-ratio:4/5;
+  }
+  details.btn-expand .panel .gallery-hint{
+    margin:-6px 0 12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--metal-2);
+    display:flex; align-items:center; gap:8px;
+  }
+  details.btn-expand .panel .gallery-hint::before{
+    content:""; width:14px; height:1px; background:var(--blue);
+  }
+
+  /* Placeholder card cuando aún no hay foto */
+  details.btn-expand .panel .gallery .card.placeholder{
+    background:rgba(78,160,255,0.04);
+    border:1px dashed var(--line);
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  details.btn-expand .panel .gallery .card.placeholder .thumb{
+    aspect-ratio:3/4;
+    background:linear-gradient(180deg, rgba(78,160,255,0.06), rgba(0,0,0,0));
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px;
+    color:var(--metal-2);
+    object-fit:cover; /* fallback */
+  }
+  details.btn-expand .panel .gallery .card.placeholder .ph-icon{
+    width:34px; height:34px;
+    border:1px solid var(--line);
+    border-radius:50%;
+    display:grid; place-items:center;
+    color:var(--blue);
+    background:rgba(0,0,0,.25);
+  }
+  details.btn-expand .panel .gallery .card.placeholder .ph-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:8.5px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--blue);
+  }
+  details.btn-expand .panel .gallery .card.placeholder .cap{
+    color:var(--metal-2);
+  }
+
+  /* Lista de categorías (reemplaza paragraph) */
+  details.btn-expand .panel .cats{
+    display:flex; flex-direction:column; gap:8px;
+    margin:14px 0 14px;
+  }
+  details.btn-expand .panel .cats li{
+    list-style:none;
+    position:relative;
+    padding:9px 12px 9px 32px;
+    font-size:13.5px;
+    color:#fff;
+    font-weight:500;
+    background:rgba(78,160,255,0.04);
+    border:1px solid var(--line);
+    border-left:2px solid var(--blue);
+    border-radius:8px;
+    line-height:1.35;
+  }
+  details.btn-expand .panel .cats li::before{
+    content:""; position:absolute;
+    left:12px; top:50%; transform:translateY(-50%);
+    width:8px; height:8px; border-radius:50%;
+    background:var(--blue);
+    box-shadow:0 0 8px var(--blue-glow);
+  }
+
+  .group-label{
+    display:flex; align-items:center; gap:10px;
+    margin:14px 0 -4px;
+    color:var(--muted);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.36em; text-transform:uppercase;
+  }
+  .group-label .index{ color:var(--blue); }
+  .group-label::after{
+    content:""; height:1px; flex:1;
+    background:linear-gradient(90deg, var(--line), transparent);
+  }
+
+  .social{ display:flex; justify-content:center; gap:10px; margin-top:18px; }
+  .social a{
+    width:42px; height:42px; border-radius:12px;
+    display:grid; place-items:center;
+    background:linear-gradient(180deg, #1a1d24, #111318);
+    border:1px solid var(--line);
+    color:var(--text);
+    transition:all .25s ease;
+  }
+  .social a:hover{
+    color:var(--blue); border-color:var(--blue);
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px var(--blue-glow);
+  }
+
+  .foot{
+    text-align:center; margin-top:24px;
+    color:var(--muted);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:.3em; text-transform:uppercase;
+  }
+  .foot b{color:var(--blue); font-weight:500}
+  .foot .ver{ display:block; margin-top:4px; color:var(--metal-2); font-size:9px; letter-spacing:.24em; }
+</style>
+</head>
+<body>
+  <main class="wrap">
+
+    <div class="header">
+      <!-- LOGO stacked como en la foto: hook / lab -->
+      <div class="logo-stack" aria-label="hook lab">
+        <span class="row hook">hook</span>
+        <span class="row lab">lab</span>
+      </div>
+
+      <div class="tag">Contenido para tu Marca · Producción y Dirección · IA · Activaciones</div>
+
+      <p class="pitch">Somos especialistas en dirección y producción de contenidos y comerciales con IA. Desarrollamos activaciones y experiencias para las marcas.</p>
+    </div>
+
+    <!-- CTA PRINCIPAL -->
+    <div class="links">
+      <a class="btn primary" href="https://wa.me/50767803509" target="_blank" rel="noopener">
+        <span class="ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21l2.1-6.3A8 8 0 1 1 9 19l-6 2z"/><path d="M9 11c.5 1 1.5 2 3 3 .8.5 1.5.5 2 0l1-1c.3-.3.7-.3 1 0l2 1.5c.3.2.4.6.2.9-.6 1-1.8 1.7-3 1.7-4 0-7-3-7-7 0-1.2.7-2.4 1.7-3 .3-.2.7-.1.9.2L11 9c.3.3.3.7 0 1l-1 1c-.5.5-.5 1.2 0 2z"/></svg>
+        </span>
+        <span class="meta">
+          Cotizar por WhatsApp
+          <small>Respuesta en menos de 24h</small>
+        </span>
+        <span class="badge">→</span>
+      </a>
+    </div>
+
+    <!-- LAP · 02 — SERVICIOS -->
+    <div class="group-label"><span class="index">LAP · 02</span><span>Servicios</span></div>
+
+    <div class="links">
+      <details class="btn-expand">
+        <summary>
+          <span class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg>
+          </span>
+          <span class="meta">
+            Formatos Propios
+            <small>Series · Reels · Branded content</small>
+          </span>
+          <span class="badge">01</span>
+          <span class="chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </summary>
+        <div class="panel">
+          <p>Conceptos audiovisuales pensados para que tu marca tenga su propio universo. No replicamos plantillas: diseñamos series y formatos que solo podrían existir en tu marca.</p>
+
+          <div class="reel">
+            <video controls preload="none" playsinline poster="" src="media/mujeres-exito.mp4"></video>
+          </div>
+
+          <div class="reel">
+            <video controls preload="none" playsinline poster="" src="media/formatos-propios.mp4"></video>
+          </div>
+        </div>
+      </details>
+
+      <details class="btn-expand">
+        <summary>
+          <span class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M7 4v4M17 4v4"/></svg>
+          </span>
+          <span class="meta">
+            Comerciales en IA
+            <small>Generación · Avatares · Postproducción</small>
+          </span>
+          <span class="badge">02</span>
+          <span class="chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </summary>
+        <div class="panel">
+          <p>Producimos comerciales y videos publicitarios usando herramientas de IA generativa. Bajamos tiempos y costos sin sacrificar la idea: la calidad creativa sigue siendo humana.</p>
+
+          <div class="reel">
+            <video controls preload="metadata" playsinline poster="" src="media/comercial-superbowl-boquitas.mp4"></video>
+          </div>
+          <div class="reel-caption">
+            <span class="tag-pill">CASE</span>
+            <span>Comercial Super Bowl · Boquitas</span>
+          </div>
+
+          <div class="next-cases">
+            <span class="next-cases-label">Próximos casos</span>
+            <span class="next-cases-text">El Oso Congelado · Refrescos &amp; Café · Super Mamá Momi</span>
+          </div>
+
+          <span class="includes-label">YouTube Shorts · Ejemplos de IA</span>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+            <a href="https://www.youtube.com/shorts/oslGETcDXBU" target="_blank" rel="noopener" style="padding: 12px 14px; background: rgba(78,160,255,0.08); border: 1px solid var(--line); border-radius: 10px; color: var(--blue); text-decoration: none; font-weight: 500; font-size: 14px; transition: all .25s ease; display: flex; align-items: center; justify-content: space-between;">
+              YouTube Short #1
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="https://www.youtube.com/shorts/leJZRjj1-uk" target="_blank" rel="noopener" style="padding: 12px 14px; background: rgba(78,160,255,0.08); border: 1px solid var(--line); border-radius: 10px; color: var(--blue); text-decoration: none; font-weight: 500; font-size: 14px; transition: all .25s ease; display: flex; align-items: center; justify-content: space-between;">
+              YouTube Short #2
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="https://www.youtube.com/shorts/8jISnxK5oBQ" target="_blank" rel="noopener" style="padding: 12px 14px; background: rgba(78,160,255,0.08); border: 1px solid var(--line); border-radius: 10px; color: var(--blue); text-decoration: none; font-weight: 500; font-size: 14px; transition: all .25s ease; display: flex; align-items: center; justify-content: space-between;">
+              YouTube Short #3
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+
+          <span class="includes-label">Qué incluye</span>
+          <ul>
+            <li>Generación de spots con IA visual y de video</li>
+            <li>Avatares y voces sintéticas para campañas</li>
+            <li>Postproducción asistida (color, sonido, motion)</li>
+            <li>Versionado multiidioma para LATAM</li>
+          </ul>
+          <a class="cta" href="https://wa.me/50767803509?text=Hola%20Rosy%2C%20quiero%20cotizar%20Comerciales%20en%20IA%20con%20hooklap" target="_blank" rel="noopener">
+            Cotizar Comerciales en IA
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+
+      <details class="btn-expand">
+        <summary>
+          <span class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5l5-2 8 4 5-2v14l-5 2-8-4-5 2z"/><path d="M8 3v17M16 7v14"/></svg>
+          </span>
+          <span class="meta">
+            Dirección de Producciones
+            <small>Comerciales · Spots · Audiovisual</small>
+          </span>
+          <span class="badge">03</span>
+          <span class="chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </summary>
+        <div class="panel">
+          <ul class="cats">
+            <li>Dirección Artística de Show</li>
+            <li>Dirección de Producciones y Preventas de TV</li>
+            <li>Dirección de Realities</li>
+          </ul>
+
+          <div class="gallery">
+            <div class="card">
+              <img class="thumb" src="media/produccion-yomellamo-set.jpg" alt="Dirección artística Yo Me Llamo" loading="lazy">
+              <div class="cap">Dirección Artística · Yo Me Llamo</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-programa-de-retos.jpg" alt="Behind the scenes con claqueta" loading="lazy">
+              <div class="cap">Programa de Retos · BTS</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-nueva-temporada-calle-7.jpg" alt="Dirección en exterior Calle 7" loading="lazy">
+              <div class="cap">Calle 7 · Nueva Temporada</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-carrera-por-el-sabor-canal-oye.jpg" alt="Equipo de producción Carrera por el Sabor" loading="lazy">
+              <div class="cap">Carrera por el Sabor · Canal Oye</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-podcast-1.jpg" alt="Dirección de podcast La Mordida" loading="lazy">
+              <div class="cap">Dirección de Podcast · La Mordida</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-en-vivo.jpg" alt="Dirección en vivo · Switch" loading="lazy">
+              <div class="cap">Dirección en Vivo · Switch</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-envivo-png-1.jpg" alt="Dirección en vivo · Cabina" loading="lazy">
+              <div class="cap">Dirección en Vivo · Cabina</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-envivo-jpg-1.jpg" alt="Dirección en vivo · Telemetro" loading="lazy">
+              <div class="cap">Dirección en Vivo · Telemetro</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-preventa-medcom-digital.jpg" alt="Set de TV preventa Medcom Digital" loading="lazy">
+              <div class="cap">Preventa · Medcom Digital</div>
+            </div>
+            <div class="card">
+              <img class="thumb" src="media/direccion-momi-v2.jpg" alt="Grabación institucional Momi" loading="lazy">
+              <div class="cap">Institucional · Momi</div>
+            </div>
+          </div>
+          <div class="gallery-hint">Desliza para ver más</div>
+
+          <span class="includes-label">Qué incluye</span>
+          <ul>
+            <li>Dirección creativa y de cámara</li>
+            <li>Producción ejecutiva, casting y locaciones</li>
+            <li>Coordinación de crew y grabaciones</li>
+            <li>Supervisión de postproducción y entrega final</li>
+          </ul>
+          <a class="cta" href="https://wa.me/50767803509?text=Hola%20Rosy%2C%20quiero%20cotizar%20Direcci%C3%B3n%20de%20Producciones%20con%20hooklap" target="_blank" rel="noopener">
+            Cotizar Dirección de Producciones
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+
+      <details class="btn-expand">
+        <summary>
+          <span class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/></svg>
+          </span>
+          <span class="meta">
+            Activaciones
+            <small>BTL · Eventos · Experiencias de marca</small>
+          </span>
+          <span class="badge">04</span>
+          <span class="chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </summary>
+        <div class="panel">
+          <p>Experiencias BTL y eventos donde tu marca queda viva en la memoria de la gente. Producción 360° de principio a fin: locación, montaje, talento y contenido.</p>
+
+          <div class="gallery no-caps">
+            <div class="card"><img class="thumb" src="media/activacion-medcom-1.jpg" alt="Medcom Digital Experience" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-studio-1.jpg" alt="Studio de producción" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-studio-2.jpg" alt="Dirección de set" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-contenido-1.jpg" alt="Grabación de contenido" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-hyundai-1.jpg" alt="Activación Hyundai Mundializate" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-hyundai-2.jpg" alt="Evento Hyundai" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-stand-1.jpg" alt="Stand interactivo" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-cola-1.jpg" alt="Evento BTL Big Cola" loading="lazy"></div>
+            <div class="card"><img class="thumb" src="media/activacion-panama-1.jpg" alt="Activación en Panamá" loading="lazy"></div>
+          </div>
+          <div class="gallery-hint">Desliza para ver más</div>
+
+          <span class="includes-label">Qué incluye</span>
+          <ul>
+            <li>Activaciones en punto de venta, universidades y trade</li>
+            <li>Stunts urbanos y guerrilla creativa</li>
+            <li>Lanzamientos, aperturas y eventos corporativos</li>
+            <li>Cobertura de contenido día del evento + reel express</li>
+          </ul>
+          <a class="cta" href="https://wa.me/50767803509?text=Hola%20Rosy%2C%20quiero%20cotizar%20una%20Activaci%C3%B3n%20con%20hooklap" target="_blank" rel="noopener">
+            Cotizar una Activación
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+
+      <details class="btn-expand">
+        <summary>
+          <span class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7-6.5-4.5L5.5 20l2-7L2 9h7z"/></svg>
+          </span>
+          <span class="meta">
+            Clientes que han confiado
+            <small>Marcas y medios que han dicho sí</small>
+          </span>
+          <span class="badge">05</span>
+          <span class="chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </summary>
+        <div class="panel">
+          <p>Desde 2020 hemos producido contenido, dirigido eventos y diseñado activaciones para marcas líderes en LATAM y los principales medios de Panamá.</p>
+
+          <span class="includes-label">Medios &amp; canales</span>
+          <ul class="brands">
+            <li>Telemetro</li>
+            <li>Medcom Digital</li>
+            <li>Canal Oye</li>
+          </ul>
+
+          <span class="includes-label">Marcas</span>
+          <ul class="brands">
+            <li>Hyundai</li>
+            <li>Banco General</li>
+            <li>Gobierno Nacional</li>
+            <li>Momi</li>
+            <li>Internacional de Seguros</li>
+            <li>Farmasi</li>
+            <li>Arrocha</li>
+            <li>Melo</li>
+            <li>Toledano</li>
+            <li>Sortis</li>
+            <li>Everlast</li>
+            <li>Aquavera</li>
+          </ul>
+
+          <a class="cta" href="https://wa.me/50767803509?text=Hola%20Rosy%2C%20me%20gustar%C3%ADa%20ser%20parte%20de%20la%20lista%20de%20clientes%20hooklap" target="_blank" rel="noopener">
+            Suma tu marca a la lista
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </details>
+    </div>
+
+    <!-- LAP · 03 — CONTACTO -->
+    <div class="group-label"><span class="index">LAP · 03</span><span>Contacto</span></div>
+
+    <div class="links">
+      <a class="btn" href="mailto:ideashooklab@gmail.com?subject=Consulta%20desde%20hooklap&body=Hola%20hooklap%2C%0A%0AMe%20gustar%C3%ADa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios." target="_blank" rel="noopener">
+        <span class="ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        </span>
+        <span class="meta">
+          ideashooklab@gmail.com
+          <small>Agencias y marcas</small>
+        </span>
+        <span class="badge">MAIL</span>
+      </a>
+    </div>
+
+    <div class="social" aria-label="Redes sociales">
+      <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      </a>
+      <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v8M8 7v.01M12 18v-5a3 3 0 0 1 6 0v5"/></svg>
+      </a>
+      <a href="#" aria-label="TikTok" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3v12a4 4 0 1 1-4-4"/><path d="M15 3a5 5 0 0 0 5 5"/></svg>
+      </a>
+      <a href="#" aria-label="YouTube" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="3"/><polygon points="10 9 16 12 10 15 10 9" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="#" aria-label="Behance" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h6a3 3 0 0 1 0 6H3z"/><path d="M3 12h7a3 3 0 0 1 0 6H3z"/><path d="M15 6h6"/><path d="M14 14h7a3.5 3.5 0 0 0-7 0z"/></svg>
+      </a>
+    </div>
+
+    <div class="foot">
+      © 2026 · hooklap <b>·</b> Somos especialistas en dirección y producción de contenidos y comerciales con IA.
+      <span class="ver">build · 06.05.26</span>
+    </div>
+
+  </main>
+</body>
+</html>
